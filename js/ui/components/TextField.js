@@ -3,7 +3,7 @@
  * A text input in the UI.
  * @implements {UI.Widget}
  */
-export class Input {
+export class TextField {
 
 	/**
 	 * @readonly
@@ -71,6 +71,14 @@ export class Input {
 	 */
 	tooltip(text) {
 		this.element.title = text;
+		return this;
+	}
+
+	/**
+	 * @returns {this}
+	 */
+	singleline() {
+		this.element.classList.add('singleline');
 		return this;
 	}
 
