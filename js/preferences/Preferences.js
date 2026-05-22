@@ -20,10 +20,13 @@ import { flattenOptionArray, None, Some } from '../utils/Option.js';
 export const GM_RELEASE_CHANNELS = ['Beta', 'Monthly', 'LTS 2026', 'LTS 2022'];
 
 /** @type {NonEmptyArray<GMS2.RuntimeType>} */
-export const GMS2_RUNTIME_TYPES = ['VM', 'YYC'];
+export const GMS2_RUNTIME_TYPES = ['VM', 'YYC',];
+
+const PREFERENCES_SCHEMA_VERSION = 1;
 
 /** @type {Readonly<TPreferences.Data>} */
 const PREFS_DEFAULT = {
+	version: PREFERENCES_SCHEMA_VERSION,
 	runtime_opts: {
 		type_opts: {
 			'Monthly': {
@@ -249,6 +252,8 @@ export class Preferences {
 		}
 
 		this.dataPath = dataPath;
+
+		Preferences.migrateSchema(loadedPrefs);
 		deep_assign(this.prefs, loadedPrefs);
 
 		const loadRequests = GM_RELEASE_CHANNELS.map(async channel => {
@@ -271,6 +276,53 @@ export class Preferences {
 		await Promise.all(loadRequests);
 		return { ok: true };
 
+	}
+
+	/**
+	 * Migrate the schema of the loaded preferences file to the current version.
+	 * 
+	 * @private
+	 * @param {Partial<TPreferences.Data>} loadedPrefs
+	 */
+	static migrateSchema(loadedPrefs) {
+		loadedPrefs.version ??= 0;
+
+		if (loadedPrefs.version === PREFERENCES_SCHEMA_VERSION) {
+			return;
+		}
+
+		if (loadedPrefs.version === 0) {
+			// Migrate version 0 -> version 1.
+			console.log('0.23.1 -> 0.24.0: Renamed `Stable` channel to `Monthly`.');
+
+			if (loadedPrefs.runtime_opts?.type_opts !== undefined) {
+				const channelPrefs = loadedPrefs.runtime_opts.type_opts;
+
+				if ('Stable' in channelPrefs) {
+					// @ts-expect-error Yes, Stable isn't a known channel now.
+					channelPrefs['Monthly'] = channelPrefs['Stable'];
+					delete channelPrefs['Stable'];
+				}
+			}
+
+			if (loadedPrefs.projectLocalData !== undefined) {
+				for (const projectPath in loadedPrefs.projectLocalData) {
+					const localData = loadedPrefs.projectLocalData[projectPath];
+					
+					// @ts-expect-error Yes, Stable isn't a known channel now.
+					if (localData.deviceChannel === 'Stable') {
+						localData.deviceChannel = 'Monthly';
+					}
+				}
+			}
+
+			loadedPrefs.version = 1;
+		}
+
+		// (Any future migrations here, one after another.)
+		// if (loadedPrefs.version === 1) {
+		// 		// ...
+		// }
 	}
 
 	/**
