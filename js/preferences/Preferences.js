@@ -293,7 +293,7 @@ export class Preferences {
 
 		if (loadedPrefs.version === 0) {
 			// Migrate version 0 -> version 1.
-			console.log('0.23.1 -> 0.24.0: Renamed `Stable` channel to `Monthly`.');
+			console.log('0.23.1 -> 0.24.0: Renamed `Stable` channel to `Monthly`, and `LTS` to `LTS 2022`');
 
 			if (loadedPrefs.runtime_opts?.type_opts !== undefined) {
 				const channelPrefs = loadedPrefs.runtime_opts.type_opts;
@@ -302,6 +302,12 @@ export class Preferences {
 					// @ts-expect-error Yes, Stable isn't a known channel now.
 					channelPrefs['Monthly'] = channelPrefs['Stable'];
 					delete channelPrefs['Stable'];
+				}
+
+				if ('LTS' in channelPrefs) {
+					// @ts-expect-error Yes, LTS isn't a known channel now.
+					channelPrefs['LTS 2022'] = channelPrefs['LTS'];
+					delete channelPrefs['LTS'];
 				}
 			}
 
@@ -312,6 +318,11 @@ export class Preferences {
 					// @ts-expect-error Yes, Stable isn't a known channel now.
 					if (localData.deviceChannel === 'Stable') {
 						localData.deviceChannel = 'Monthly';
+					}
+
+					// @ts-expect-error Yes, LTS isn't a known channel now.
+					if (localData.deviceChannel === 'LTS') {
+						localData.deviceChannel = 'LTS 2022';
 					}
 				}
 			}

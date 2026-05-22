@@ -169,6 +169,10 @@ export class ProjectProperties {
 			if (portable.runtimeReleaseChannel === 'Stable') {
 				portable.runtimeReleaseChannel = 'Monthly';
 			}
+			// @ts-expect-error Renaming lts here.
+			else if (portable.runtimeReleaseChannel === 'LTS') {
+				portable.runtimeReleaseChannel = 'LTS 2022';
+			}
 
 			portable.version = 1;
 		}
