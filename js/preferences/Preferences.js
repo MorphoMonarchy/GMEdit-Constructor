@@ -58,7 +58,8 @@ const PREFS_DEFAULT = {
 	use_global_build: true,
 	global_build_path: def_global_build_path,
 	showTooltipHints: true,
-	outputPosition: 'fullTab'
+	outputPosition: 'fullTab',
+	shouldFocusOutput: true,
 };
 
 const MAX_LOAD_TRIES = 3;
@@ -85,6 +86,7 @@ export class Preferences {
 		'setGlobalBuildPath',
 		'setShowTooltipHints',
 		'setOutputPosition',
+		'setShouldFocusOutput',
 		'setPrefabsPath',
 	]);
 
@@ -479,6 +481,20 @@ export class Preferences {
 		this.save();
 		
 		this.eventEmitter.emit('setOutputPosition', value);
+	}
+
+	/**
+	 * Whether to focus the output when starting a job.
+	 */
+	get shouldFocusOutput() {
+		return this.prefs.shouldFocusOutput;
+	}
+
+	set shouldFocusOutput(value) {
+		this.prefs.shouldFocusOutput = value;
+		this.save();
+
+		this.eventEmitter.emit('setShouldFocusOutput', value);
 	}
 
 	/**

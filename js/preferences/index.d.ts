@@ -81,6 +81,11 @@ export declare global {
 			 * Where compiler output should be shown.
 			 */
 			outputPosition: OutputPosition;
+
+			/**
+			 * Whether to focus the output when starting a job.
+			 */
+			shouldFocusOutput: boolean;
 		}
 
 		/**
@@ -164,6 +169,7 @@ export declare global {
 			setGlobalBuildPath: { globalBuildPath: string };
 			setShowTooltipHints: { showTooltipHints: boolean };
 			setOutputPosition: OutputPosition;
+			setShouldFocusOutput: boolean;
 
 			/**
 			 * Fires when the list of runtimes is modified for a given release channel.

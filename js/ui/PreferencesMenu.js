@@ -119,6 +119,16 @@ export class PreferencesMenu {
 				`))
 				.singleline()
 				.appendTo(section);
+
+			this.shouldFocusOutputCheckbox = new Checkbox('Focus job output when starting a job',
+					this.preferences.shouldFocusOutput,
+					(value) => { this.preferences.shouldFocusOutput = value }
+				)
+				.tooltip(docString(`
+					Whether, upon starting a new job, the job's output should be put in the
+					foreground. If you'd rather the job run in the background, disable this.
+				`))
+				.appendTo(section);
 		
 		}).also(it => this.element.appendChild(it));
 
@@ -210,6 +220,7 @@ export class PreferencesMenu {
 			setReuseOutputTab: this.onSetReuseOutputTab,
 			setShowTooltipHints: this.onSetShowTooltipHints,
 			setOutputPosition: this.onSetOutputPosition,
+			setShouldFocusOutput: this.onSetShouldFocusOutput,
 			setUseGlobalBuildPath: this.onSetUseGlobalBuildPath,
 			setGlobalBuildPath: this.onSetGlobalBuildPath,
 			setPrefabsPath: this.onSetPrefabsPath,
@@ -265,6 +276,14 @@ export class PreferencesMenu {
 	 */
 	onSetOutputPosition = (outputPosition) => {
 		this.outputPositionDropdown.setSelectedOption(outputPosition);
+	}
+
+	/**
+	 * @private
+	 * @param {TPreferences.PreferencesEventMap['setShouldFocusOutput']} shouldFocusOutput
+	 */
+	onSetShouldFocusOutput = (shouldFocusOutput) => {
+		this.shouldFocusOutputCheckbox.value = shouldFocusOutput;
 	}
 
 	/**

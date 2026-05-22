@@ -172,10 +172,10 @@ export class BottomPane {
 		this.tabListElement.appendChild(bookmark.container);
 
 		if (this.tabs.length === 1) {
+			this.showTab(tab);
 			this.show();
 		}
 		
-		this.showTab(tab);
 		return tab;
 	}
 
