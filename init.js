@@ -5,7 +5,7 @@
 (() => {
 
 	const PLUGIN_NAME = 'GMEdit-Constructor';
-	const PLUGIN_VERSION = '0.24.0';
+	const PLUGIN_VERSION = '0.24.1';
 
 	/** @type {NodeModules} */
 	const nodeModules = {
