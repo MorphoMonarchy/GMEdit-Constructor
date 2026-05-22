@@ -40,11 +40,13 @@ export class PreferencesMenu {
 	 */
 	channelWidgets = {
 		// @ts-expect-error Filled in during the constructor.
-		Stable: {},
+		'Monthly': {},
 		// @ts-expect-error Filled in during the constructor.
-		Beta: {},
+		'Beta': {},
 		// @ts-expect-error Filled in during the constructor.
-		LTS: {},
+		'LTS 2022': {},
+		// @ts-expect-error Filled in during the constructor.
+		'LTS 2026': {},
 	};
 
 	/**

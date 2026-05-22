@@ -201,7 +201,7 @@ export class GMRuntimeVersion extends GMVersion {
 		 * 
 		 * @type {GM.ReleaseChannel[]}
 		 */
-		const CHANNEL_QUERY_ORDER = ['LTS', 'Stable', 'Beta'];
+		const CHANNEL_QUERY_ORDER = ['LTS 2026', 'LTS 2022', 'Monthly', 'Beta'];
 
 		for (const channel of CHANNEL_QUERY_ORDER) {
 

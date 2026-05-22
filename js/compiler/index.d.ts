@@ -21,9 +21,10 @@ export declare global {
 			'Android'			;
 
 		type ReleaseChannel = 
-			'Stable'	|
+			'Monthly'	|
 			'Beta'		|
-			'LTS'		;
+			'LTS 2026'	|
+			'LTS 2022'	;
 
 		/**
 		 * A build task to execute.

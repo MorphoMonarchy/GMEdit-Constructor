@@ -17,7 +17,7 @@ import { flattenOptionArray, None, Some } from '../utils/Option.js';
  * List of recognised GameMaker IDE/Runtime channel types.
  * @type {NonEmptyArray<GM.ReleaseChannel>} 
  */
-export const GM_RELEASE_CHANNELS = ['Stable', 'Beta', 'LTS'];
+export const GM_RELEASE_CHANNELS = ['Beta', 'Monthly', 'LTS 2026', 'LTS 2022'];
 
 /** @type {NonEmptyArray<GMS2.RuntimeType>} */
 export const GMS2_RUNTIME_TYPES = ['VM', 'YYC'];
@@ -26,21 +26,26 @@ export const GMS2_RUNTIME_TYPES = ['VM', 'YYC'];
 const PREFS_DEFAULT = {
 	runtime_opts: {
 		type_opts: {
-			Stable: {
-				search_path: def_runtime_paths.Stable,
-				users_path: def_user_paths.Stable,
-				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.Stable,
+			'Monthly': {
+				search_path: def_runtime_paths.Monthly,
+				users_path: def_user_paths.Monthly,
+				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.Monthly,
 			},
-			Beta: {
+			'Beta': {
 				search_path: def_runtime_paths.Beta,
 				users_path: def_user_paths.Beta,
 				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.Beta,
 			},
-			LTS: {
-				search_path: def_runtime_paths.LTS,
-				users_path: def_user_paths.LTS,
-				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.LTS,
-			}
+			'LTS 2022': {
+				search_path: def_runtime_paths['LTS 2022'],
+				users_path: def_user_paths['LTS 2022'],
+				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths['LTS 2022'],
+			},
+			'LTS 2026': {
+				search_path: def_runtime_paths['LTS 2026'],
+				users_path: def_user_paths['LTS 2026'],
+				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths['LTS 2026'],
+			},
 		}
 	},
 	projectLocalData: {},
