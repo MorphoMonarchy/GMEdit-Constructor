@@ -251,6 +251,11 @@ export class GMRuntimeVersion extends GMVersion {
 	 * @returns {boolean}
 	 */
 	supportsPrefabsPath() {
+		// Workaround for Red runtimes (LTS2026 on Linux downloads one.)
+		if (this.year === 9) {
+			return this.compare(new GMRuntimeVersion(9, 9, 1, 1439)) >= 0;
+		}
+
 		return this.compare(new GMRuntimeVersion(2024, 1400, 2, 925)) >= 0;
 	}
 
