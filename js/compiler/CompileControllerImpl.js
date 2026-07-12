@@ -9,6 +9,7 @@ import { InvalidStateErr, SolvableError } from '../utils/Err.js';
 import { child_process } from '../utils/node/node-import.js';
 import { Err, Ok } from '../utils/Result.js';
 import { docString } from '../utils/StringUtils.js';
+import { GMVersion } from './GMVersion.js';
 
 /**
  * Real implementation of the compile controller, spawning Igor tasks.
@@ -87,10 +88,22 @@ export class CompileControllerImpl {
 		const existingJob = this.jobs[id];
 		await existingJob?.stop();
 
+		/** @type {NodeJS.ProcessEnv} */
+		const env = {};
+
+		// MacOS Builds currently randomly segfault in dotnet unless JIT optimisations are disabled.
+		// https://github.com/YoYoGames/GameMaker-Bugs/issues/15357
+		if (process.platform === 'darwin') {
+			if (settings.runtime.version.compare(new GMVersion(2024, 14, 0, 0)) > 0) {
+				env.COMPlus_ZapDisable = '1';
+			}
+		}
+
 		/** @type {import('node:child_process').SpawnOptionsWithoutStdio} */
 		const spawn_opts = {
 			cwd: this.project.dir,
-			detached: (process.platform !== 'win32')
+			detached: (process.platform !== 'win32'),
+			env,
 		};
 		
 		/** @type {import('node:child_process').ChildProcessWithoutNullStreams} */
