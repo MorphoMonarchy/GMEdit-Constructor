@@ -89,7 +89,7 @@ export class CompileControllerImpl {
 		await existingJob?.stop();
 
 		/** @type {NodeJS.ProcessEnv} */
-		const env = {};
+		const env = Object.assign({}, process.env);
 
 		// MacOS Builds currently randomly segfault in dotnet unless JIT optimisations are disabled.
 		// https://github.com/YoYoGames/GameMaker-Bugs/issues/15357
