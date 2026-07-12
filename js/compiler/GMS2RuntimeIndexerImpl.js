@@ -30,9 +30,7 @@ export class GMS2RuntimeIndexerImpl {
 	 * @type {GMS2.RuntimeIndexer['getRuntimes']}
 	 */
 	async getRuntimes(path) {
-
 		const dirContents = await this.diskIO.readDir(path);
-		console.log(dirContents)
 		
 		if (!dirContents.ok) {
 			return Err({ code: 'pathReadError', inner: dirContents.err });
