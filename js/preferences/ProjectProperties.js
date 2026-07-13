@@ -4,11 +4,16 @@
 
 import { GMRuntimeVersion, GMVersion } from '../compiler/GMVersion.js';
 import { HOST_PLATFORM } from '../compiler/igor-paths.js';
+import { BaseError, SolvableError } from '../utils/Err.js';
 import { EventEmitterImpl } from '../utils/EventEmitterImpl.js';
 import { project_config_tree_get } from '../utils/project.js';
+import { docString } from '../utils/StringUtils.js';
 import { Preferences } from './Preferences.js';
 
 const GMEditProjectProperties = $gmedit['ui.project.ProjectProperties'];
+
+/** Current version of the portable preferences schema. */
+const PORTABLE_PREFS_SCHEMA_VERSION = 1;
 
 /**
  * @implements {Destroyable}
@@ -86,17 +91,98 @@ export class ProjectProperties {
 	 * @param {ProblemLogger} problemLogger Method of logging problems.
 	 */
 	constructor(project, projectVersion, preferences, localProjectPropertiesStore, problemLogger) {
-
 		this.problemLogger = problemLogger;
 		this.project = project;
 		this.projectVersion = projectVersion;
 		this.preferences = preferences;
 		this.localProjectPropertiesStore = localProjectPropertiesStore;
-		this.portable = project.properties['GMEdit-Constructor'] ?? {};
-		this.local = this.localProjectPropertiesStore.load();
 
+		const loadedPortablePrefs = project.properties['GMEdit-Constructor'];
+
+		if (loadedPortablePrefs !== undefined) {
+			const result = ProjectProperties.migratePortableSchema(loadedPortablePrefs);
+			this.portable = loadedPortablePrefs;
+
+			switch (result) {
+				case 'up-to-date':
+					break;
+
+				case 'migrated':
+					problemLogger.warn('Project preferences format upgraded', new BaseError(
+						docString(`
+							If you're working on this project on multiple computers or collaborating
+							with others, make sure the plugin gets updated everywhere before making
+							a commit, or you'll probably see weird bugs.
+						`)
+					));
+
+					this.savePortableProps();
+					break;
+				
+				case 'plugin-out-of-date':
+					problemLogger.error('This project needs a newer version of Constructor', new SolvableError(
+						docString(`
+							The preferences for this project have a newer schema version
+							(${loadedPortablePrefs.version}) than Constructor's version
+							(${PORTABLE_PREFS_SCHEMA_VERSION}). Expect problems!
+						`),
+						docString(`
+							You can download the latest version from GitHub (if you have update
+							checks enabled, you'll already be bugged about this).
+							
+							If there's another reason you're sticking to this version of
+							Constructor, consider making a bug report or feature request about the
+							issue you're having with latest version so it can be fixed :D
+						`)
+					));
+
+					break;
+			}
+		} else {
+			this.portable = {};
+		}
+
+		this.local = this.localProjectPropertiesStore.load();
 		this.events.on('setRuntimeChannel', this.onChangeRuntimeChannel);
-		
+	}
+
+	/**
+	 * Migrate the schema of the loaded portable preferences to the current version.
+	 * 
+	 * @private
+	 * @param {Partial<TPreferences.Project.PortableData>} portable
+	 * @returns {'up-to-date' | 'plugin-out-of-date' | 'migrated'}
+	 */
+	static migratePortableSchema(portable) {
+		portable.version ??= 0;
+
+		if (portable.version > PORTABLE_PREFS_SCHEMA_VERSION) {
+			return 'plugin-out-of-date';
+		}
+
+		if (portable.version === PORTABLE_PREFS_SCHEMA_VERSION) {
+			return 'up-to-date';
+		}
+
+		if (portable.version === 0) {
+			// @ts-expect-error Renaming stable here.
+			if (portable.runtimeReleaseChannel === 'Stable') {
+				portable.runtimeReleaseChannel = 'Monthly';
+			}
+			// @ts-expect-error Renaming lts here.
+			else if (portable.runtimeReleaseChannel === 'LTS') {
+				portable.runtimeReleaseChannel = 'LTS 2022';
+			}
+
+			portable.version = 1;
+		}
+
+		// (Any future migrations here, one after another.)
+		// if (portable.version === 1) {
+		// 		// ...
+		// }
+
+		return 'migrated';
 	}
 
 	/**

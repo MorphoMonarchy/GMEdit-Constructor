@@ -138,7 +138,13 @@ export class OutputLogTab extends ConstructorTab {
 	 */
 	static create() {
 		const file = new GmlFile('Constructor Job', null, this.fileKind);
+
+		const previousFile = GmlFile.current;
 		GmlFile.openTab(file);
+
+		// Change back to the current file rather than stealing focus, we only want to focus if
+		// explicitly desired.
+		previousFile?.tabEl?.click();
 
 		return /** @type {OutputLogTab} */ (file.editor);
 	}

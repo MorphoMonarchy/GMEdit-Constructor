@@ -17,30 +17,38 @@ import { flattenOptionArray, None, Some } from '../utils/Option.js';
  * List of recognised GameMaker IDE/Runtime channel types.
  * @type {NonEmptyArray<GM.ReleaseChannel>} 
  */
-export const GM_RELEASE_CHANNELS = ['Stable', 'Beta', 'LTS'];
+export const GM_RELEASE_CHANNELS = ['Beta', 'Monthly', 'LTS 2026', 'LTS 2022'];
 
 /** @type {NonEmptyArray<GMS2.RuntimeType>} */
-export const GMS2_RUNTIME_TYPES = ['VM', 'YYC'];
+export const GMS2_RUNTIME_TYPES = ['VM', 'YYC',];
+
+const PREFERENCES_SCHEMA_VERSION = 1;
 
 /** @type {Readonly<TPreferences.Data>} */
 const PREFS_DEFAULT = {
+	version: PREFERENCES_SCHEMA_VERSION,
 	runtime_opts: {
 		type_opts: {
-			Stable: {
-				search_path: def_runtime_paths.Stable,
-				users_path: def_user_paths.Stable,
-				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.Stable,
+			'Monthly': {
+				search_path: def_runtime_paths.Monthly,
+				users_path: def_user_paths.Monthly,
+				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.Monthly,
 			},
-			Beta: {
+			'Beta': {
 				search_path: def_runtime_paths.Beta,
 				users_path: def_user_paths.Beta,
 				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.Beta,
 			},
-			LTS: {
-				search_path: def_runtime_paths.LTS,
-				users_path: def_user_paths.LTS,
-				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths.LTS,
-			}
+			'LTS 2022': {
+				search_path: def_runtime_paths['LTS 2022'],
+				users_path: def_user_paths['LTS 2022'],
+				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths['LTS 2022'],
+			},
+			'LTS 2026': {
+				search_path: def_runtime_paths['LTS 2026'],
+				users_path: def_user_paths['LTS 2026'],
+				prefabsPath: IGOR_PLATFORM_INFO.defaultPrefabsPaths['LTS 2026'],
+			},
 		}
 	},
 	projectLocalData: {},
@@ -50,7 +58,8 @@ const PREFS_DEFAULT = {
 	use_global_build: true,
 	global_build_path: def_global_build_path,
 	showTooltipHints: true,
-	outputPosition: 'fullTab'
+	outputPosition: 'fullTab',
+	shouldFocusOutput: true,
 };
 
 const MAX_LOAD_TRIES = 3;
@@ -77,6 +86,7 @@ export class Preferences {
 		'setGlobalBuildPath',
 		'setShowTooltipHints',
 		'setOutputPosition',
+		'setShouldFocusOutput',
 		'setPrefabsPath',
 	]);
 
@@ -244,6 +254,8 @@ export class Preferences {
 		}
 
 		this.dataPath = dataPath;
+
+		Preferences.migrateSchema(loadedPrefs);
 		deep_assign(this.prefs, loadedPrefs);
 
 		const loadRequests = GM_RELEASE_CHANNELS.map(async channel => {
@@ -266,6 +278,64 @@ export class Preferences {
 		await Promise.all(loadRequests);
 		return { ok: true };
 
+	}
+
+	/**
+	 * Migrate the schema of the loaded preferences file to the current version.
+	 * 
+	 * @private
+	 * @param {Partial<TPreferences.Data>} loadedPrefs
+	 */
+	static migrateSchema(loadedPrefs) {
+		loadedPrefs.version ??= 0;
+
+		if (loadedPrefs.version === PREFERENCES_SCHEMA_VERSION) {
+			return;
+		}
+
+		if (loadedPrefs.version === 0) {
+			// Migrate version 0 -> version 1.
+			console.log('0.23.1 -> 0.24.0: Renamed `Stable` channel to `Monthly`, and `LTS` to `LTS 2022`');
+
+			if (loadedPrefs.runtime_opts?.type_opts !== undefined) {
+				const channelPrefs = loadedPrefs.runtime_opts.type_opts;
+
+				if ('Stable' in channelPrefs) {
+					// @ts-expect-error Yes, Stable isn't a known channel now.
+					channelPrefs['Monthly'] = channelPrefs['Stable'];
+					delete channelPrefs['Stable'];
+				}
+
+				if ('LTS' in channelPrefs) {
+					// @ts-expect-error Yes, LTS isn't a known channel now.
+					channelPrefs['LTS 2022'] = channelPrefs['LTS'];
+					delete channelPrefs['LTS'];
+				}
+			}
+
+			if (loadedPrefs.projectLocalData !== undefined) {
+				for (const projectPath in loadedPrefs.projectLocalData) {
+					const localData = loadedPrefs.projectLocalData[projectPath];
+					
+					// @ts-expect-error Yes, Stable isn't a known channel now.
+					if (localData.deviceChannel === 'Stable') {
+						localData.deviceChannel = 'Monthly';
+					}
+
+					// @ts-expect-error Yes, LTS isn't a known channel now.
+					if (localData.deviceChannel === 'LTS') {
+						localData.deviceChannel = 'LTS 2022';
+					}
+				}
+			}
+
+			loadedPrefs.version = 1;
+		}
+
+		// (Any future migrations here, one after another.)
+		// if (loadedPrefs.version === 1) {
+		// 		// ...
+		// }
 	}
 
 	/**
@@ -411,6 +481,20 @@ export class Preferences {
 		this.save();
 		
 		this.eventEmitter.emit('setOutputPosition', value);
+	}
+
+	/**
+	 * Whether to focus the output when starting a job.
+	 */
+	get shouldFocusOutput() {
+		return this.prefs.shouldFocusOutput;
+	}
+
+	set shouldFocusOutput(value) {
+		this.prefs.shouldFocusOutput = value;
+		this.save();
+
+		this.eventEmitter.emit('setShouldFocusOutput', value);
 	}
 
 	/**

@@ -596,7 +596,10 @@ export class ConstructorPlugin {
 		}
 
 		JobOutputLog.create(job.data, display);
-		display.bringToForeground();
+
+		if (this.preferences.shouldFocusOutput) {
+			display.bringToForeground();
+		}
 	}
 
 	/**

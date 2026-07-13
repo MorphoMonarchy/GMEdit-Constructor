@@ -15,19 +15,22 @@ const IGOR_PLATFORM_INFO_MAP = {
 		platform_path_name: 'windows',
 		user_platform: 'Windows',
 		default_runtime_paths: {
-			Stable:	'C:\\ProgramData\\GameMakerStudio2\\Cache\\runtimes',
-			Beta:	'C:\\ProgramData\\GameMakerStudio2-Beta\\Cache\\runtimes',
-			LTS:	'C:\\ProgramData\\GameMakerStudio2-LTS\\Cache\\runtimes'
+			'Monthly':	'C:\\ProgramData\\GameMakerStudio2\\Cache\\runtimes',
+			'Beta':		'C:\\ProgramData\\GameMakerStudio2-Beta\\Cache\\runtimes',
+			'LTS 2022':	'C:\\ProgramData\\GameMakerStudio2-LTS\\Cache\\runtimes',
+			'LTS 2026':	'C:\\ProgramData\\GameMakerStudio2-LTS2026\\Cache\\runtimes',
 		},
 		defaultPrefabsPaths: {
-			Stable:	'C:\\ProgramData\\GameMakerStudio2\\Prefabs',
-			Beta:	'C:\\ProgramData\\GameMakerStudio2-Beta\\Prefabs',
-			LTS:	'C:\\ProgramData\\GameMakerStudio2-LTS\\Prefabs'
+			'Monthly':	'C:\\ProgramData\\GameMakerStudio2\\Prefabs',
+			'Beta':		'C:\\ProgramData\\GameMakerStudio2-Beta\\Prefabs',
+			'LTS 2022':	'C:\\ProgramData\\GameMakerStudio2-LTS\\Prefabs',
+			'LTS 2026':	'C:\\ProgramData\\GameMakerStudio2-LTS2026\\Prefabs',
 		},
 		default_user_paths: {
-			Stable:	windowsAppData + '\\GameMakerStudio2',
-			Beta:	windowsAppData + '\\GameMakerStudio2-Beta',
-			LTS:	windowsAppData + '\\GameMakerStudio2-LTS'
+			'Monthly':	windowsAppData + '\\GameMakerStudio2',
+			'Beta':		windowsAppData + '\\GameMakerStudio2-Beta',
+			'LTS 2022':	windowsAppData + '\\GameMakerStudio2-LTS',
+			'LTS 2026':	windowsAppData + '\\GameMakerStudio2-LTS2026',
 		},
 		default_global_build_path: windowsLocalAppData + '\\GMEdit-Constructor\\builds'
 	},
@@ -36,19 +39,22 @@ const IGOR_PLATFORM_INFO_MAP = {
 		platform_path_name: 'osx',
 		user_platform: 'Mac',
 		default_runtime_paths: {
-			Stable:	'/Users/Shared/GameMakerStudio2/Cache/runtimes',
-			Beta:	'/Users/Shared/GameMakerStudio2-Beta/Cache/runtimes',
-			LTS:	'/Users/Shared/GameMakerStudio2-LTS/Cache/runtimes'
+			'Monthly':	'/Users/Shared/GameMakerStudio2/Cache/runtimes',
+			'Beta':		'/Users/Shared/GameMakerStudio2-Beta/Cache/runtimes',
+			'LTS 2022':	'/Users/Shared/GameMakerStudio2-LTS/Cache/runtimes',
+			'LTS 2026':	'/Users/Shared/GameMakerStudio2-LTS2026/Cache/runtimes',
 		},
 		defaultPrefabsPaths: {
-			Stable:	'/Users/Shared/GameMakerStudio2/Prefabs',
-			Beta:	'/Users/Shared/GameMakerStudio2-Beta/Prefabs',
-			LTS:	'/Users/Shared/GameMakerStudio2-LTS/Prefabs'
+			'Monthly':	'/Users/Shared/GameMakerStudio2/Prefabs',
+			'Beta':		'/Users/Shared/GameMakerStudio2-Beta/Prefabs',
+			'LTS 2022':	'/Users/Shared/GameMakerStudio2-LTS/Prefabs',
+			'LTS 2026':	'/Users/Shared/GameMakerStudio2-LTS2026/Prefabs',
 		},
 		default_user_paths: {
-			Stable:	process.env.HOME + '/.config/GameMakerStudio2',
-			Beta:	process.env.HOME + '/.config/GameMakerStudio2-Beta',
-			LTS:	process.env.HOME + '/.config/GameMakerStudio2-LTS'
+			'Monthly':	process.env.HOME + '/Library/Application Support/GameMakerStudio2',
+			'Beta':		process.env.HOME + '/Library/Application Support/GameMakerStudio2-Beta',
+			'LTS 2022':	process.env.HOME + '/Library/Application Support/GameMakerStudio2-LTS',
+			'LTS 2026':	process.env.HOME + '/Library/Application Support/GameMakerStudio2-LTS2026',
 		},
 		default_global_build_path: process.env.HOME + '/GMEdit-Constructor/builds'
 	},
@@ -57,19 +63,22 @@ const IGOR_PLATFORM_INFO_MAP = {
 		platform_path_name: 'linux',
 		user_platform: 'Linux',
 		default_runtime_paths: {
-			Stable:	linuxDataPath + '/GameMakerStudio2/Cache/runtimes',
-			Beta:	linuxDataPath + '/GameMakerStudio2-Beta/Cache/runtimes',
-			LTS:	linuxDataPath + '/GameMakerStudio2-LTS/Cache/runtimes'
+			'Monthly':	linuxDataPath + '/GameMakerStudio2/Cache/runtimes',
+			'Beta':		linuxDataPath + '/GameMakerStudio2-Beta/Cache/runtimes',
+			'LTS 2022':	linuxDataPath + '/GameMakerStudio2-LTS/Cache/runtimes',
+			'LTS 2026':	linuxDataPath + '/GameMakerStudio2-LTS2026/Cache/runtimes',
 		},
 		defaultPrefabsPaths: {
-			Stable:	linuxDataPath + '/GameMakerStudio2/Prefabs',
-			Beta:	linuxDataPath + '/GameMakerStudio2-Beta/Prefabs',
-			LTS:	linuxDataPath + '/GameMakerStudio2-LTS/Prefabs'
+			'Monthly':	linuxDataPath + '/GameMakerStudio2/Prefabs',
+			'Beta':		linuxDataPath + '/GameMakerStudio2-Beta/Prefabs',
+			'LTS 2022':	linuxDataPath + '/GameMakerStudio2-LTS/Prefabs',
+			'LTS 2026':	linuxDataPath + '/GameMakerStudio2-LTS2026/Prefabs',
 		},
 		default_user_paths: {
-			Stable:	linuxConfigPath + '/GameMakerStudio2',
-			Beta:	linuxConfigPath + '/GameMakerStudio2-Beta',
-			LTS:	linuxConfigPath + '/GameMakerStudio2-LTS'
+			'Monthly':	linuxConfigPath + '/GameMakerStudio2',
+			'Beta':		linuxConfigPath + '/GameMakerStudio2-Beta',
+			'LTS 2022':	linuxConfigPath + '/GameMakerStudio2-LTS',
+			'LTS 2026':	linuxConfigPath + '/GameMakerStudio2-LTS2026',
 		},
 		default_global_build_path: linuxDataPath + '/GMEdit-Constructor/builds'
 	}

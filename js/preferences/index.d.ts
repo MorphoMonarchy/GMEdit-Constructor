@@ -27,6 +27,10 @@ export declare global {
 		};
 
 		type Data = {
+			/**
+			 * Version of the object schema (this typedef itself) the preferences were saved in.
+			 */
+			version: number;
 
 			/** Globally selected runtime options that may be overriden by projects. */
 			runtime_opts: {
@@ -77,6 +81,11 @@ export declare global {
 			 * Where compiler output should be shown.
 			 */
 			outputPosition: OutputPosition;
+
+			/**
+			 * Whether to focus the output when starting a job.
+			 */
+			shouldFocusOutput: boolean;
 		}
 
 		/**
@@ -88,6 +97,10 @@ export declare global {
 			 * Project-specific preferences data that is stored alongside the project!
 			 */
 			type PortableData = {
+				/**
+				 * Version of the object schema (this typedef itself) the preferences were saved in.
+				 */
+				version: number;
 		
 				/**
 				 * Release channel to use, if specified.
@@ -98,7 +111,6 @@ export declare global {
 				 * Chosen runtime version to use in that channel, if specified.
 				 */
 				runtimeVersion?: string;
-		
 			};
 
 			/**
@@ -157,6 +169,7 @@ export declare global {
 			setGlobalBuildPath: { globalBuildPath: string };
 			setShowTooltipHints: { showTooltipHints: boolean };
 			setOutputPosition: OutputPosition;
+			setShouldFocusOutput: boolean;
 
 			/**
 			 * Fires when the list of runtimes is modified for a given release channel.

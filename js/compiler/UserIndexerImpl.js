@@ -26,7 +26,8 @@ export class UserIndexerImpl {
 		const MAYBE_USER_DIR_CONTENTS = [
 			'license.plist',
 			'local_settings.json',
-			DEVICES_JSON_FILENAME
+			DEVICES_JSON_FILENAME,
+			'Themes'
 		];
 
 		const dirNameList = await this.diskIO.readDir(path);

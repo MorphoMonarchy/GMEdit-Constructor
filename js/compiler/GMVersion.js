@@ -201,7 +201,7 @@ export class GMRuntimeVersion extends GMVersion {
 		 * 
 		 * @type {GM.ReleaseChannel[]}
 		 */
-		const CHANNEL_QUERY_ORDER = ['LTS', 'Stable', 'Beta'];
+		const CHANNEL_QUERY_ORDER = ['LTS 2026', 'LTS 2022', 'Monthly', 'Beta'];
 
 		for (const channel of CHANNEL_QUERY_ORDER) {
 
@@ -251,6 +251,11 @@ export class GMRuntimeVersion extends GMVersion {
 	 * @returns {boolean}
 	 */
 	supportsPrefabsPath() {
+		// Workaround for Red runtimes (LTS2026 on Linux downloads one.)
+		if (this.year === 9) {
+			return this.compare(new GMRuntimeVersion(9, 9, 1, 1439)) >= 0;
+		}
+
 		return this.compare(new GMRuntimeVersion(2024, 1400, 2, 925)) >= 0;
 	}
 
